@@ -2,7 +2,10 @@
 
 Kaggle AI Agent Capstone Group Project
 
-## How to Run 
+## How to Run Basic Agent ;)
+
 ### make a venv with requirements.txt
+
 ### Go to .env.example and add api key and rename file to .env
+
 ### Run it with "adk web" in command line

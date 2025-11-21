@@ -1,10 +1,12 @@
 from google.adk.agents import Agent
+from google.adk.tools import google_search
 
 root_agent = Agent (
     name="basic_agent",
     model="gemini-2.5-flash-lite",
-    description="Basic agent",
+    description="A simple agent that can answer general questions.",
     instruction="""
-    You are a basic assistant that will help the user with any questions.
+    You are a helpful assistant. Use Google Search for current info or if unsure."
     """,
+    tools=[google_search],
 )
