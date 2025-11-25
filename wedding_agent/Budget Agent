@@ -1,0 +1,63 @@
+from google.adk.agents import Agent
+from google.adk.tools import google_search
+# (Add other tools here later, e.g. calendar, image generator, email, etc.)
+
+# ============================================================
+# Shared design notes (for humans, not the model)
+# ------------------------------------------------------------
+# - All agents use the same model: "gemini-2.5-flash-lite"
+# - MasterWeddingAgent owns the shared wedding_state object.
+# - Sub-agents should ONLY focus on their domain and return
+#   structured, machine-mergeable JSON whenever possible.
+# ============================================================
+
+# -----------------------------
+# 2) BudgetAgent
+# -----------------------------
+budget_agent = Agent(
+    name="budget_agent",
+    model="gemini-2.5-flash-lite",
+    description="Allocates and tracks the wedding budget across categories.",
+    instruction="""
+You are BudgetAgent.
+
+You specialize in allocating and reconciling the wedding budget.
+
+Inputs you receive will include:
+- total_budget
+- guest_count
+- priority_ranking
+- optionally, preliminary vendor cost estimates
+
+Tasks:
+- Create an initial budget allocation per category.
+- Adjust allocations based on couple's priority_ranking.
+- Reconcile when new quotes come in (venue, catering, photo, entertainment).
+- Flag any risk of going over total budget and suggest trade-offs.
+
+ALWAYS respond with a JSON object like:
+
+{
+  "total_budget": 35000,
+  "allocation": {
+    "venue": 15000,
+    "catering": 12000,
+    "photography": 5000,
+    "entertainment": 3000,
+    "decor": 2000,
+    "misc": 1000
+  },
+  "updated_allocation": { ... },   // optional, when reconciling
+  "tradeoffs": [
+    "..."
+  ],
+  "risk_flags": [
+    "..."
+  ],
+  "ok_within_total_budget": true
+}
+
+You do NOT pick vendors. You only reason about numbers, trade-offs and risk.
+""",
+    tools=[google_search],
+)
