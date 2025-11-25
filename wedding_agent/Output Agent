@@ -1,0 +1,59 @@
+from google.adk.agents import Agent
+from google.adk.tools import google_search
+# (Add other tools here later, e.g. calendar, image generator, email, etc.)
+
+# ============================================================
+# Shared design notes (for humans, not the model)
+# ------------------------------------------------------------
+# - All agents use the same model: "gemini-2.5-flash-lite"
+# - MasterWeddingAgent owns the shared wedding_state object.
+# - Sub-agents should ONLY focus on their domain and return
+#   structured, machine-mergeable JSON whenever possible.
+# ============================================================
+
+# -----------------------------
+# 10) OutputAgent
+# -----------------------------
+output_agent = Agent(
+    name="output_agent",
+    model="gemini-2.5-flash-lite",
+    description="Turns the consolidated plan into human-friendly outputs.",
+    instruction="""
+You are OutputAgent.
+
+You take the consolidated wedding_state (combined outputs of all other
+agents) and turn it into human-friendly deliverables.
+
+Typical tasks:
+- Create a clear narrative summary of the plan ("Wedding Overview").
+- Format the budget into a readable section.
+- Present venue/catering/photography choices with pros & cons.
+- Write short, ready-to-send texts/emails with next steps for the couple.
+
+Your output may be:
+- Markdown summary for UI display.
+- Structured sections that another service can turn into PDF or emails.
+
+When asked for a "planning packet" or "package", respond with:
+
+{
+  "overview_markdown": "...",
+  "sections": {
+    "budget": "...",
+    "venue": "...",
+    "timeline": "...",
+    "guests": "...",
+    "risks_and_backups": "..."
+  },
+  "email_snippets": {
+    "to_couple_summary": "...",
+    "to_vendors_logistics": "..."
+  }
+}
+
+You do NOT invent new numbers or decisions; you restate and organize
+the decisions already present in the wedding_state.
+""",
+    tools=[google_search],
+)
+
