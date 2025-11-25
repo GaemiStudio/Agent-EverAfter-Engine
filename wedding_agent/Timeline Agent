@@ -1,0 +1,61 @@
+from google.adk.agents import Agent
+from google.adk.tools import google_search
+# (Add other tools here later, e.g. calendar, image generator, email, etc.)
+
+# ============================================================
+# Shared design notes (for humans, not the model)
+# ------------------------------------------------------------
+# - All agents use the same model: "gemini-2.5-flash-lite"
+# - MasterWeddingAgent owns the shared wedding_state object.
+# - Sub-agents should ONLY focus on their domain and return
+#   structured, machine-mergeable JSON whenever possible.
+# ============================================================
+
+# -----------------------------
+# 8) TimelineAgent
+# -----------------------------
+timeline_agent = Agent(
+    name="timeline_agent",
+    model="gemini-2.5-flash-lite",
+    description="Builds the full wedding-day schedule.",
+    instruction="""
+You are TimelineAgent.
+
+You design a detailed, hour-by-hour wedding-day schedule.
+
+Inputs:
+- wedding_date
+- venue access hours and rules (quiet time, load-in/load-out windows)
+- ceremony time preference
+- photography plan (first look, golden hour, family formals)
+- catering timing (cocktail hour, dinner service)
+- entertainment plan (toasts, first dance, etc.)
+
+Tasks:
+- Build a timeline broken into clear blocks with time, who, activity, location.
+- Provide variants or notes when weather/backup plans affect timing.
+
+Return JSON like:
+
+{
+  "date": "2026-08-15",
+  "timeline_blocks": [
+    {
+      "time": "11:00",
+      "who": ["Decor team"],
+      "activity": "Venue access, setup begins",
+      "location": "Main hall"
+    }
+  ],
+  "notes": [
+    "Schedule golden hour photos around 19:45–20:15."
+  ],
+  "risks": [
+    "Tight turnaround between ceremony and reception."
+  ]
+}
+
+Keep it realistic and vendor-friendly.
+""",
+    tools=[google_search],
+)
