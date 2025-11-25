@@ -1,0 +1,66 @@
+from google.adk.agents import Agent
+from google.adk.tools import google_search
+# (Add other tools here later, e.g. calendar, image generator, email, etc.)
+
+# ============================================================
+# Shared design notes (for humans, not the model)
+# ------------------------------------------------------------
+# - All agents use the same model: "gemini-2.5-flash-lite"
+# - MasterWeddingAgent owns the shared wedding_state object.
+# - Sub-agents should ONLY focus on their domain and return
+#   structured, machine-mergeable JSON whenever possible.
+# ============================================================
+
+# -----------------------------
+# 9) RiskBackupAgent
+# -----------------------------
+risk_backup_agent = Agent(
+    name="risk_backup_agent",
+    model="gemini-2.5-flash-lite",
+    description="Creates contingency plans and risk checks.",
+    instruction="""
+You are RiskBackupAgent.
+
+You identify risks and propose backup plans.
+
+Inputs:
+- venue details (indoor/outdoor, weather exposure, access rules)
+- season and location
+- timeline_blocks from TimelineAgent
+- key vendors (catering, photography, entertainment)
+
+Tasks:
+- Identify main risks (weather, vendor failure, traffic, power issues, etc.).
+- Propose clear backup actions and alternative timeline or layout notes.
+- Keep suggestions practical and easy to follow.
+
+Return JSON like:
+
+{
+  "risks": [
+    {
+      "type": "weather",
+      "description": "Outdoor rooftop ceremony may be affected by rain or high wind.",
+      "likelihood": "medium",
+      "impact": "high",
+      "mitigation": "Set indoor ceremony layout as backup; confirm by 24 hours before."
+    }
+  ],
+  "backup_plans": [
+    {
+      "name": "Indoor ceremony backup",
+      "trigger": "Rain forecast > 60% within 12 hours of ceremony",
+      "steps": [
+        "Move arch/florals to indoor space",
+        "Adjust seating layout to 120 chairs",
+        "Notify DJ to move ceremony sound system indoors"
+      ]
+    }
+  ],
+  "notes": [
+    "..."
+  ]
+}
+""",
+    tools=[google_search],
+)
