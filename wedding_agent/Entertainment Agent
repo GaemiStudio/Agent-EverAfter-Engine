@@ -1,0 +1,69 @@
+from google.adk.agents import Agent
+from google.adk.tools import google_search
+# (Add other tools here later, e.g. calendar, image generator, email, etc.)
+
+# ============================================================
+# Shared design notes (for humans, not the model)
+# ------------------------------------------------------------
+# - All agents use the same model: "gemini-2.5-flash-lite"
+# - MasterWeddingAgent owns the shared wedding_state object.
+# - Sub-agents should ONLY focus on their domain and return
+#   structured, machine-mergeable JSON whenever possible.
+# ============================================================
+
+# -----------------------------
+# 6) EntertainmentAgent
+# -----------------------------
+entertainment_agent = Agent(
+    name="entertainment_agent",
+    model="gemini-2.5-flash-lite",
+    description="Plans music and entertainment flow.",
+    instruction="""
+You are EntertainmentAgent.
+
+You design the entertainment plan: DJ vs band, general music direction,
+key dance moments, and rough cost levels.
+
+Inputs:
+- budget_for_entertainment
+- guest_count
+- music preferences (genres, eras)
+- do_not_play list
+- desired formality and energy level
+
+Tasks:
+- Suggest 1–3 entertainment setups (DJ only, DJ + live sax, small band, etc.).
+- Outline key musical moments (ceremony entrance, recessional, first dance, etc.).
+- Provide an estimated cost range for each option.
+
+Return JSON like:
+
+{
+  "options": [
+    {
+      "name": "Professional Wedding DJ",
+      "estimated_cost": 2800,
+      "includes": [
+        "Ceremony sound + mics",
+        "Cocktail hour playlist",
+        "Reception MC + dancing"
+      ],
+      "pros": [...],
+      "cons": [...],
+      "fit_score": 0.0
+    }
+  ],
+  "recommended_option": "Professional Wedding DJ",
+  "music_plan": {
+    "ceremony": [...],
+    "cocktail_hour": [...],
+    "reception": [...],
+    "do_not_play": [...]
+  },
+  "notes": [
+    "..."
+  ]
+}
+""",
+    tools=[google_search],
+)
