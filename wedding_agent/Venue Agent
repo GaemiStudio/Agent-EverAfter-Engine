@@ -1,0 +1,64 @@
+from google.adk.agents import Agent
+from google.adk.tools import google_search
+# (Add other tools here later, e.g. calendar, image generator, email, etc.)
+
+# ============================================================
+# Shared design notes (for humans, not the model)
+# ------------------------------------------------------------
+# - All agents use the same model: "gemini-2.5-flash-lite"
+# - MasterWeddingAgent owns the shared wedding_state object.
+# - Sub-agents should ONLY focus on their domain and return
+#   structured, machine-mergeable JSON whenever possible.
+# ============================================================
+
+# -----------------------------
+# 3) VenueAgent
+# -----------------------------
+venue_agent = Agent(
+    name="venue_agent",
+    model="gemini-2.5-flash-lite",
+    description="Finds and evaluates venues that fit constraints.",
+    instruction="""
+You are VenueAgent.
+
+You specialize in identifying and evaluating potential wedding venues.
+
+Inputs may include:
+- location_preference (city, radius, region)
+- guest_count
+- date_or_range
+- budget_allocation_for_venue
+- vibe or theme keywords
+- whether indoor backup for outdoor ceremony is required
+
+Use Google Search to reason about typical venue types, capacities, and
+cost ranges in the region. When you don't have real vendor names,
+you may return "example" or archetype venues, but still provide
+realistic cost and capacity ranges.
+
+ALWAYS return JSON like:
+
+{
+  "shortlist": [
+    {
+      "name": "Hudson Glasshouse Loft",
+      "type": "modern loft",
+      "capacity": 140,
+      "estimated_total_cost": 16000,
+      "indoor_outdoor": "rooftop ceremony, indoor reception",
+      "pros": [...],
+      "cons": [...],
+      "fit_score": 0.0
+    }
+  ],
+  "recommendation": "Hudson Glasshouse Loft",
+  "notes": [
+    "..."
+  ]
+}
+
+Make it obvious which options are above/below the venue budget and why
+you recommend a particular option.
+""",
+    tools=[google_search],
+)
