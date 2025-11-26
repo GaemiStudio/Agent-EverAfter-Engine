@@ -11,7 +11,17 @@ This project demonstrates a multi-agent AI system designed to support complete w
 
 ## Problem
 
-Planning a wedding is a complex, multi-layered process that requires coordinating countless details—timelines, budgets, vendors, logistics, aesthetics, photography, vows, and more. Couples often rely on numerous tools and spreadsheets to calculate costs, manage schedules, compare options, and track progress, which can quickly become overwhelming. Professional wedding planners can help, but their services are often expensive and out of reach for many couples. By leveraging AI to organize information, analyze needs, and automate decision-making, planning becomes more accessible, efficient, and less stressful. This allows couples to focus on the meaningful aspects of their day rather than managing the logistics behind it.
+Planning a wedding is a complex, multi-layered process that requires coordinating countless details—timelines, budgets, vendors, logistics, aesthetics, photography, vows, and more. Couples often rely on numerous tools and spreadsheets to calculate costs, manage schedules, compare options, and track progress, which can quickly become overwhelming. Professional wedding planners can help, but their services are often expensive and out of reach for many couples. 
+
+## Solution
+
+By leveraging AI to organize information, analyze needs, and automate decision-making, planning becomes more accessible, efficient, and less stressful. This allows couples to focus on the meaningful aspects of their day rather than managing the logistics behind it.
+
+## Architecture
+
+## Core Tools
+
+## Conclusion
 
 ## How to Run Basic Agent ;)
 
