@@ -8,7 +8,7 @@ This project demonstrates a multi-agent AI system designed to support complete w
 
 ## Diagram of Agent System
 
-![Wedding Agent Diagram](Wedding Agent diagram.jpeg)
+![Wedding Agent Diagram](Wedding Agent diagram.jpg)
 
 ## How to Run Basic Agent ;)
 
