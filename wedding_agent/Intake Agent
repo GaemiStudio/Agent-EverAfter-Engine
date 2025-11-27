@@ -2,77 +2,151 @@ from google.adk.agents import Agent
 from google.adk.tools import google_search
 # (Add other tools here later, e.g. calendar, image generator, email, etc.)
 
+import json
+
 # ============================================================
-# Shared design notes (for humans, not the model)
-# ------------------------------------------------------------
-# - All agents use the same model: "gemini-2.5-flash-lite"
-# - MasterWeddingAgent owns the shared wedding_state object.
-# - Sub-agents should ONLY focus on their domain and return
-#   structured, machine-mergeable JSON whenever possible.
+# Intake Agent for Wedding Planning
 # ============================================================
 
-
-# -----------------------------
-# 1) IntakeAgent
-# -----------------------------
+# 1) Define the intake agent using Gemini 2.5 Lite
 intake_agent = Agent(
     name="intake_agent",
-    model="gemini-2.5-flash-lite",
-    description="Collects and normalizes initial wedding requirements.",
-    instruction="""
-You are IntakeAgent.
+    model="gemini-2.5-lite",
+    description="Collects and normalizes initial wedding requirements."
+)
 
-Your job is to gather and normalize all inputs needed to plan a wedding.
-You turn messy user input into a clean, structured JSON object that other
-agents can rely on.
-
-Focus on:
-- Who is getting married (names, pronouns).
-- Budget (approximate is fine).
-- Guest count (range or estimate is okay).
-- Date or date range.
-- Location preference (city/region/travel radius).
-- Overall vibe/theme and priorities (e.g. venue, food, photos, music).
-
-Only ask follow-up questions when absolutely necessary to proceed.
-
-ALWAYS output a JSON object with this shape:
-
-{
-  "couple": {
-    "names": ["..."],
-    "pronouns": "...",
-    "contact": {
-      "email": "...",
-      "phone": "..."
-    }
-  },
-  "constraints": {
-    "budget": 0,
-    "guest_count": 0,
-    "date_or_range": "...",
-    "location_preference": "..."
-  },
-  "preferences": {
-    "vibe": ["modern", "romantic"],
-    "ceremony_style": "indoor/outdoor/mixed",
-    "reception_style": "indoor/outdoor/mixed",
-    "must_haves": [],
-    "hard_no": []
-  },
-  "priority_ranking": [
-    "venue + photography aesthetics",
-    "food quality",
-    "music & dancing"
-  ],
-  "open_questions": [
-    "..."
-  ]
+# 2) Define the schema we want to fill
+wedding_data = {
+    "couple": {
+        "names": [],
+        "pronouns": "",
+        "contact": {"email": "", "phone": ""}
+    },
+    "constraints": {
+        "budget": 0,
+        "guest_count": 0,
+        "date_or_range": "",
+        "location_preference": ""
+    },
+    "preferences": {
+        "vibe": [],
+        "ceremony_style": "",
+        "reception_style": "",
+        "must_haves": [],
+        "hard_no": []
+    },
+    "priority_ranking": [],
+    "open_questions": []
 }
 
-Do NOT try to pick vendors or make a budget; that is for other agents.
-If information is missing, set a reasonable placeholder and add an
-explanatory note to "open_questions".
-""",
-    tools=[google_search],
-)
+# 3) Instruction block for the intake behavior
+INSTRUCTION = """
+You are IntakeAgent.
+
+Protocol:
+- Ask ONE pinpointed question at a time to fill missing fields in the wedding_data JSON.
+- Do NOT answer your own questions.
+- After the user responds, update the JSON with their answer.
+- Show the updated JSON after each step.
+- Continue until all fields are filled. If missing, insert a placeholder and add a note in "open_questions".
+"""
+
+def ask_next_question(current_json: dict) -> str:
+    """
+    Ask the intake_agent (Gemini) what the next question should be.
+    We tell it about the current JSON and ask for ONE question.
+    """
+    prompt = f"""{INSTRUCTION}
+
+Current JSON:
+{json.dumps(current_json, indent=2)}
+
+What is the next question to ask the user?
+Return ONLY the question text the user should see.
+If you want to hint which field this maps to, add at the end:
+(field: field_name)
+"""
+    response = intake_agent.run(prompt)
+    return response.text.strip()
+
+
+def update_json(current_json: dict, field: str, answer: str) -> dict:
+    """
+    Simple mapper: update current_json with the user's answer.
+    This is very basic; you can expand it later.
+    """
+    field = field.strip()
+
+    if field == "names":
+        current_json["couple"]["names"] = [n.strip() for n in answer.split(",")]
+    elif field == "pronouns":
+        current_json["couple"]["pronouns"] = answer
+    elif field == "email":
+        current_json["couple"]["contact"]["email"] = answer
+    elif field == "phone":
+        current_json["couple"]["contact"]["phone"] = answer
+    elif field == "budget":
+        current_json["constraints"]["budget"] = answer
+    elif field == "guest_count":
+        current_json["constraints"]["guest_count"] = answer
+    elif field == "date_or_range":
+        current_json["constraints"]["date_or_range"] = answer
+    elif field == "location_preference":
+        current_json["constraints"]["location_preference"] = answer
+    elif field == "vibe":
+        current_json["preferences"]["vibe"].append(answer)
+    elif field == "ceremony_style":
+        current_json["preferences"]["ceremony_style"] = answer
+    elif field == "reception_style":
+        current_json["preferences"]["reception_style"] = answer
+    elif field == "must_haves":
+        current_json["preferences"]["must_haves"].append(answer)
+    elif field == "hard_no":
+        current_json["preferences"]["hard_no"].append(answer)
+    elif field == "priority_ranking":
+        current_json["priority_ranking"] = [p.strip() for p in answer.split(",")]
+    else:
+        current_json["open_questions"].append(f"Unmapped field {field}: {answer}")
+
+    return current_json
+
+
+def run_intake():
+    """
+    Simple CLI loop to demonstrate the intake flow.
+    """
+    print("👰🤵 Wedding Intake Agent (Gemini-powered)\n")
+
+    while True:
+        question = ask_next_question(wedding_data)
+        print("Agent:", question)
+        user_answer = input("You: ")
+
+        # Expecting something like: "... (field: names)"
+        field = None
+        if "(field:" in question:
+            try:
+                field = question.split("(field:")[1].split(")")[0].strip()
+            except Exception:
+                field = None
+
+        if field:
+            update_json(wedding_data, field, user_answer)
+        else:
+            # If we don't know the field, just log it as open question.
+            wedding_data["open_questions"].append(
+                f"Unmapped answer: {user_answer} (from question: {question})"
+            )
+
+        print("\nCurrent wedding data:")
+        print(json.dumps(wedding_data, indent=2))
+        print("-" * 40)
+
+        # Very basic stop condition for demo
+        if wedding_data["couple"]["names"] and wedding_data["constraints"]["date_or_range"]:
+            print("\n✅ Intake complete!")
+            break
+
+
+if __name__ == "__main__":
+    run_intake()
