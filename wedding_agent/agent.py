@@ -1,14 +1,14 @@
 from google.adk.agents import Agent
-from google.adk.tools import google_search
+from .creative_agent import creative_agent
 
 root_agent = Agent (
     name="wedding_agent",
-    model="gemini-2.5-flash-lite",
+    model="gemini-2.0-flash",
     description="wedding agent",
     instruction="""
 
-    You are a helpful personal assistant that is responsible for overseeing the work of the other agents. 
-    Your primary goal is to maintain the Shared Context Object, delegate tasks efficiently, and ensure the 
+    You are a helpful personal assistant that is responsible for overseeing the work of the other agents.
+    Your primary goal is to maintain the Shared Context Object, delegate tasks efficiently, and ensure the
     final Consolidated Plan adheres to all user constraints (budget, date, guest count).
 
     Always delegate the task to the appropriate agent. Use your best judgement to determine which agent to delegate to.
@@ -32,6 +32,5 @@ root_agent = Agent (
         - Calendar/Scheduling Tool: For setting and managing the definitive wedding date and task deadlines (primarily used by the Logistics Agent).
 
     """,
-    sub_agents=[],
-    tools=[google_search],
+    sub_agents=[creative_agent],
 )
