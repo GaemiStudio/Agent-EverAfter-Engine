@@ -1,4 +1,4 @@
-# Agent-Marry-Poppins
+# Agent-Aisle-Buddy
 
 Kaggle AI Agent Capstone Group Project
 
@@ -7,7 +7,9 @@ Kaggle AI Agent Capstone Group Project
 This project demonstrates a multi-agent AI system designed to support complete wedding planning from start to finish. Our primary agent functions as an orchestrator, delegating tasks to specialized sub-agents responsible for individual domains such as logistics, scheduling, food and vendor coordination, photography planning, and vow writing. Each agent focuses on its designated area of expertise, and the orchestrator aggregates their outputs into a unified, comprehensive solution for the user. This project highlights how coordinated AI agents can streamline complex workflows and deliver structured, end-to-end assistance for real-world planning scenarios.
 
 ## Diagram of Agent System
-![Wedding Agent board](https://github.com/user-attachments/assets/e669debf-8d73-4321-b149-4a9d6a2e55e1)
+[Wedding Agent updated.pdf](https://github.com/user-attachments/files/23831185/Wedding.Agent.updated.pdf)
+
+
 
 ## Problem
 
