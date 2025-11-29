@@ -20,7 +20,7 @@ By leveraging AI to organize information, analyze needs, and automate decision-m
 
 ## Architecture
 
-MasterWeddingAgent (root)
+**MasterWeddingAgent (root)**
 Orchestrates the whole flow.
 Knows:
 where wedding_state.json lives
@@ -30,29 +30,29 @@ Decides whether to:
 run sub-agents sequentially, or
 run some of them in parallel and returns a summary of what was generated (for UI / logs).
 
-IntakeAgent
+**Intake_Agent**
 ADK Agent focused on turning messy couple input into structured JSON.
 Outputs wedding_state JSON (full core state of the wedding)
 Writes a short intake summary section into wedding_notes.txt
 
-CreativeAgent (writing stuff)
+**Creative_Agent (writing related items)**
 Reads wedding_state.json.
 Outputs vows drafts, ceremony script outline, speech prompts / email templates.
 Appends a “Creative / Writing Output” section to wedding_notes.txt.
 
-PhotographyAgent
+**Photography_Agent**
 Reads wedding_state.json.
 Outputs:
 Overview paragraph and detailed recs (coverage, shooters, timing, shot list highlights).
 Optionally: structured JSON with package tiers
 Appends “Photography Recommendations” to wedding_notes.txt.
 
-CateringAgent
+**Catering_Agent**
 Reads wedding_state.json.
 Outputs menu recommendations, service style (buffet, family-style, plated), timing with respect to ceremony/reception.
 Appends “Catering Recommendations” to wedding_notes.txt.
 
-BudgetAgent
+**Budget_Agent**
 Reads wedding_state.json.
 Also optionally reads outputs from other agents (e.g. photo/catering packages) if you want.
 Outputs allocated budget by category, possible “lean / standard / premium” options.
