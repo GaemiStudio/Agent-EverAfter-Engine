@@ -10,11 +10,9 @@ This project demonstrates a multi-agent AI system designed to support complete w
 
 ![Wedding Agent updated](https://github.com/user-attachments/assets/1d301c8e-0ae1-409d-b94f-7c0283144c2a)
 
-
-
 ## Problem
 
-Planning a wedding is a complex, multi-layered process that requires coordinating countless details—timelines, budgets, vendors, logistics, aesthetics, photography, vows, and more. Couples often rely on numerous tools and spreadsheets to calculate costs, manage schedules, compare options, and track progress, which can quickly become overwhelming. Professional wedding planners can help, but their services are often expensive and out of reach for many couples. 
+Planning a wedding is a complex, multi-layered process that requires coordinating countless details—timelines, budgets, vendors, logistics, aesthetics, photography, vows, and more. Couples often rely on numerous tools and spreadsheets to calculate costs, manage schedules, compare options, and track progress, which can quickly become overwhelming. Professional wedding planners can help, but their services are often expensive and out of reach for many couples.
 
 ## Solution
 
@@ -32,4 +30,4 @@ By leveraging AI to organize information, analyze needs, and automate decision-m
 
 ### Go to .env.example and add api key and rename file to .env
 
-### Run it with "adk run wedding_agent" in command line
+### Run it with "adk run wedding_agent" or "adk web" in command line
