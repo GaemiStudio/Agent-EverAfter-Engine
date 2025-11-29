@@ -32,4 +32,4 @@ By leveraging AI to organize information, analyze needs, and automate decision-m
 
 ### Go to .env.example and add api key and rename file to .env
 
-### Run it with "adk web" in command line
+### Run it with "adk run wedding_agent" in command line
