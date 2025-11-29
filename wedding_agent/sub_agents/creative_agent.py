@@ -1,4 +1,16 @@
 from google.adk.agents import Agent
+from google.adk.runners import InMemoryRunner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+import asyncio
+
+# Import shared memory helpers
+from shared.memory_manager import load_wedding_state, append_notes
+
+
+# ------------------------
+# 1) Creative Agent definition
+# ------------------------
 
 creative_agent = Agent(
     name="creative_agent",
@@ -26,3 +38,69 @@ creative_agent = Agent(
     - Cultural and religious traditions
     """,
 )
+
+
+# ------------------------
+# 2) Runner + session setup
+# ------------------------
+
+APP_NAME = "wedding_planner_app"
+USER_ID = "creative_user"
+SESSION_ID = "creative_session"
+
+_session_service = InMemorySessionService()
+_runner = InMemoryRunner(agent=creative_agent, app_name=APP_NAME)
+
+async def _ensure_session():
+    await _session_service.create_session(
+        app_name=APP_NAME,
+        user_id=USER_ID,
+        session_id=SESSION_ID,
+    )
+
+asyncio.run(_ensure_session())
+
+
+# ------------------------
+# 3) Public run function
+# ------------------------
+
+def run_creative():
+    """
+    Loads the shared wedding state, sends it to the Creative Agent,
+    gets Gemini's response, appends it to wedding_notes.txt, and
+    returns the text.
+    """
+    # Load the current wedding state JSON
+    state = load_wedding_state()
+
+    # Prepare message for the agent
+    user_message = types.Content(
+        role="user",
+        parts=[
+            types.Part(
+                text=(
+                    "Here is the wedding state:\n"
+                    f"{state}\n\n"
+                    "Based on this, generate creative wedding text "
+                    "(vows, ceremony script, or speech suggestions) that fits the couple's style."
+                )
+            )
+        ],
+    )
+
+    final_text = ""
+
+    # Run agent
+    for event in _runner.run(
+        user_id=USER_ID,
+        session_id=SESSION_ID,
+        new_message=user_message,
+    ):
+        if event.content and event.content.parts and event.content.parts[0].text:
+            final_text = event.content.parts[0].text.strip()
+
+    # Append to wedding_notes.txt
+    append_notes("Creative Writing Output", final_text)
+
+    return final_text
