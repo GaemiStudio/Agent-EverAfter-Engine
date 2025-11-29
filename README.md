@@ -40,8 +40,6 @@ IntakeAgent
 ADK Agent focused on turning messy couple input into structured JSON.
 Outputs:
 wedding_state JSON (full core state of the wedding)
-Side effect:
-Writes/overwrites wedding_state.json
 Writes a short intake summary section into wedding_notes.txt
 
 CreativeAgent (writing stuff)
@@ -50,7 +48,6 @@ Outputs:
 Vows drafts
 Ceremony script outline
 Optional speech prompts / email templates
-Side effect:
 Appends a “Creative / Writing Output” section to wedding_notes.txt.
 
 PhotographyAgent
@@ -59,7 +56,6 @@ Outputs:
 Overview paragraph
 Detailed recs (coverage, shooters, timing, shot list highlights)
 Optionally: structured JSON with package tiers
-Side effect:
 Appends “Photography Recommendations” to wedding_notes.txt.
 
 CateringAgent
@@ -68,7 +64,6 @@ Outputs:
 Menu recommendations
 Service style (buffet, family-style, plated)
 Timing with respect to ceremony/reception
-Side effect:
 Appends “Catering Recommendations” to wedding_notes.txt.
 
 BudgetAgent
@@ -77,7 +72,6 @@ Also optionally reads outputs from other agents (e.g. photo/catering packages) i
 Outputs:
 Allocated budget by category
 Possible “lean / standard / premium” options
-Side effect:
 Appends “Budget Breakdown” to wedding_notes.txt.
 Optionally:
 Writes a small budget.json file for more structured downstream use.
