@@ -26,7 +26,7 @@ Orchestrates the whole flow.
 Knows:
 where wedding_state.json lives
 where wedding_notes.txt lives
-Calls needed agnets.
+Calls needed agents.
 Decides whether to:
 run sub-agents sequentially, or
 run some of them in parallel and returns a summary of what was generated (for UI / logs).
