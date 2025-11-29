@@ -25,65 +25,51 @@ Orchestrates the whole flow.
 Knows:
 where wedding_state.json lives
 where wedding_notes.txt lives
-Calls:
-IntakeAgent → to create/update the core JSON state
-CreativeAgent → vows, speeches, ceremony text, emails, etc.
-PhotographyAgent
-CateringAgent
-BudgetAgent
+Calls needed agnets.
 Decides whether to:
 run sub-agents sequentially, or
-run some of them in parallel (later optimization)
-Returns a summary of what was generated (for UI / logs).
+run some of them in parallel and returns a summary of what was generated (for UI / logs).
 
 IntakeAgent
 ADK Agent focused on turning messy couple input into structured JSON.
-Outputs:
-wedding_state JSON (full core state of the wedding)
+Outputs wedding_state JSON (full core state of the wedding)
 Writes a short intake summary section into wedding_notes.txt
 
 CreativeAgent (writing stuff)
 Reads wedding_state.json.
-Outputs:
-Vows drafts
-Ceremony script outline
-Optional speech prompts / email templates
+Outputs vows drafts, ceremony script outline, speech prompts / email templates.
 Appends a “Creative / Writing Output” section to wedding_notes.txt.
 
 PhotographyAgent
 Reads wedding_state.json.
 Outputs:
-Overview paragraph
-Detailed recs (coverage, shooters, timing, shot list highlights)
+Overview paragraph and detailed recs (coverage, shooters, timing, shot list highlights).
 Optionally: structured JSON with package tiers
 Appends “Photography Recommendations” to wedding_notes.txt.
 
 CateringAgent
 Reads wedding_state.json.
-Outputs:
-Menu recommendations
-Service style (buffet, family-style, plated)
-Timing with respect to ceremony/reception
+Outputs menu recommendations, service style (buffet, family-style, plated), timing with respect to ceremony/reception.
 Appends “Catering Recommendations” to wedding_notes.txt.
 
 BudgetAgent
 Reads wedding_state.json.
 Also optionally reads outputs from other agents (e.g. photo/catering packages) if you want.
-Outputs:
-Allocated budget by category
-Possible “lean / standard / premium” options
+Outputs allocated budget by category, possible “lean / standard / premium” options.
 Appends “Budget Breakdown” to wedding_notes.txt.
 Optionally:
 Writes a small budget.json file for more structured downstream use.
+
+Couple → (raw answers)
+→ MasterWeddingAgent
+→ IntakeAgent (Gemini via ADK)
+→ wedding_state.json (core truth)
+→ SubAgents (all read wedding_state.json)
+→ each sub-agent outputs text
+→ all append to wedding_notes.txt
+→ MasterWeddingAgent returns outputs + file paths to your app
 
 ## Core Tools
 
 ## Conclusion
 
-## How to Run Basic Agent ;)
-
-### make a venv with requirements.txt
-
-### Go to .env.example and add api key and rename file to .env
-
-### Run it with "adk run wedding_agent" or "adk web" in command line
