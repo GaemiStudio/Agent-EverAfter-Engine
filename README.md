@@ -1,4 +1,4 @@
-# Agent-Marry-Poppins
+# Agent-Aisle-Buddy
 
 Kaggle AI Agent Capstone Group Project
 
