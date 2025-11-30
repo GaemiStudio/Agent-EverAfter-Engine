@@ -24,6 +24,14 @@ root_agent = Agent (
 
         
     """,
-    sub_agents=[],
+    sub_agents=[
+        budget_agent,
+        catering_agent,
+        creative_agent,
+        intake_agent,
+        photography_agent,
+        shared_memory_manager
+        
+    ],
     tools=[google_search],
 )
