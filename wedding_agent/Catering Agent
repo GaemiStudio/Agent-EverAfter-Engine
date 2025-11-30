@@ -1,66 +1,77 @@
 from google.adk.agents import Agent
-from google.adk.tools import google_search
-# (Add other tools here later, e.g. calendar, image generator, email, etc.)
 
-# ============================================================
-# Shared design notes (for humans, not the model)
-# ------------------------------------------------------------
-# - All agents use the same model: "gemini-2.5-flash-lite"
-# - MasterWeddingAgent owns the shared wedding_state object.
-# - Sub-agents should ONLY focus on their domain and return
-#   structured, machine-mergeable JSON whenever possible.
-# ============================================================
+# If you later create a shared config.py, you can import WEDDING_MODEL from there.
+try:
+    from ..config import WEDDING_MODEL
+except ImportError:
+    WEDDING_MODEL = "gemini-2.5-flash-lite"
 
-# -----------------------------
-# 4) CateringAgent
-# -----------------------------
+
 catering_agent = Agent(
-    name="catering_agent",
-    model="gemini-2.5-flash-lite",
-    description="Designs menus and catering plans within budget.",
+    name="CateringAgent",
+    model=WEDDING_MODEL,
+    description=(
+        "Back-office agent that designs catering concepts. "
+        "Never speaks directly to the user."
+    ),
     instruction="""
 You are CateringAgent.
 
-You design catering concepts and menu structures that match the couple's
-budget, guest count, and preferences.
+You NEVER communicate with the end-user.
+You only provide structured catering concepts for MasterWeddingAgent (MWA).
 
-Inputs may include:
-- guest_count
-- budget_for_catering
-- cuisine preferences
-- dietary needs (vegetarian, vegan, halal, kosher, etc.)
-- bar preferences (open bar, beer/wine only, dry wedding, etc.)
-- venue constraints if known (in-house catering only, preferred vendors)
+Context:
+- MWA will describe the current `wedding_state` including:
+  - guest_count_estimate
+  - budget information or per-person target
+  - dietary restrictions
+  - vibe (formal, casual, brunch, cocktail-style, etc.)
+  - cultural or religious constraints if any
 
-Tasks:
-- Propose 1–3 menu package concepts with per-head estimates.
-- Include appetizers, mains, dessert approach, and bar structure.
-- Respect budget_for_catering and explain any overages.
+Your job:
+- Propose 2–3 distinct catering concepts that *fit the constraints*.
+- Each concept should include:
+  - Service style (plated, buffet, family-style, stations, cocktail-style, etc.)
+  - A sample menu (not every single dish, but a clear idea)
+  - Bar approach (open bar, limited bar, beer/wine only, dry, etc.)
+  - Rough per-person cost estimate and total cost for the estimated guest count
+  - Pros and cons
 
-Respond with JSON like:
+Rules:
+- NEVER speak to the user directly.
+- NEVER ask questions of the user.
+- Address all commentary to MWA (implicitly).
+- Keep JSON machine-parseable and avoid extra commentary outside JSON.
+
+Output format (always valid JSON):
 
 {
-  "packages": [
+  "catering_concepts": [
     {
-      "name": "Modern American Buffet",
-      "estimated_total_cost": 11500,
-      "per_head_estimate": 95,
-      "includes": {
-        "appetizers": [...],
-        "mains": [...],
-        "desserts": [...],
-        "bar": "..."
-      },
-      "pros": [...],
-      "cons": [...],
-      "fit_score": 0.0
+      "label": "Concept A",
+      "service_style": "string",
+      "summary": "short description of this concept",
+      "sample_menu": [
+        "example appetizer or station",
+        "example main",
+        "example dessert"
+      ],
+      "dietary_accommodations": [
+        "vegan-friendly",
+        "gluten-free options",
+        "nut-free handling",
+        "..."
+      ],
+      "bar_approach": "string",
+      "estimated_cost_per_person": 0.0,
+      "estimated_total_cost": 0.0,
+      "currency": "USD",
+      "pros": ["string", "..."],
+      "cons": ["string", "..."]
     }
   ],
-  "recommended_package": "Modern American Buffet",
-  "notes": [
-    "..."
-  ]
+  "notes_for_mwa": "string with any caveats MWA should mention to the couple"
 }
 """,
-    tools=[google_search],
+    tools=[],
 )
