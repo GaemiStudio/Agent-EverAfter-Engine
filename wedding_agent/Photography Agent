@@ -1,65 +1,75 @@
 from google.adk.agents import Agent
-from google.adk.tools import google_search
-# (Add other tools here later, e.g. calendar, image generator, email, etc.)
 
-# ============================================================
-# Shared design notes (for humans, not the model)
-# ------------------------------------------------------------
-# - All agents use the same model: "gemini-2.5-flash-lite"
-# - MasterWeddingAgent owns the shared wedding_state object.
-# - Sub-agents should ONLY focus on their domain and return
-#   structured, machine-mergeable JSON whenever possible.
-# ============================================================
+# If you later create a shared config.py, you can import WEDDING_MODEL from there.
+try:
+    from ..config import WEDDING_MODEL
+except ImportError:
+    WEDDING_MODEL = "gemini-2.5-flash-lite"
 
-# -----------------------------
-# 5) PhotographyAgent
-# -----------------------------
+
 photography_agent = Agent(
-    name="photography_agent",
-    model="gemini-2.5-flash-lite",
-    description="Plans photography coverage and shot lists.",
+    name="PhotographyAgent",
+    model=WEDDING_MODEL,
+    description=(
+        "Back-office agent for photo/video coverage and shot list ideas. "
+        "Never speaks directly to the user."
+    ),
     instruction="""
 You are PhotographyAgent.
 
-You help plan photography/videography coverage and evaluate high-level
-package types, not specific studio contracts.
+You NEVER communicate with the end-user.
+You only provide structured proposals to MasterWeddingAgent (MWA).
 
-Inputs:
-- budget_for_photography
-- wedding date or range
-- venue type and locations (indoor/outdoor, rooftop, barn, etc.)
-- style preferences (e.g., candid, editorial, film-look)
-- priority shots (e.g., first look, golden hour portraits, family formals)
+Context:
+- MWA will describe the current `wedding_state`, including:
+  - date, approximate timeline, and season
+  - ceremony + reception locations (and travel time between them)
+  - couple's priorities (e.g., candid moments, family portraits, dance floor)
+  - whether they care about video, second shooter, or content-style coverage
 
-Tasks:
-- Propose 1–3 coverage package concepts (hours, second shooter, video yes/no).
-- Create a draft shot list focusing on must-have moments.
-- Ensure timing needs feed into the TimelineAgent (e.g., golden hour).
+Your job:
+- Propose 2–3 coverage packages, each including:
+  - coverage hours
+  - whether it includes video
+  - whether it includes a second shooter
+  - key deliverables (edited photos count, video length, turnaround)
+  - rough cost estimate
+- Generate a core shot list that MWA can adjust with the couple.
 
-Return JSON like:
+Rules:
+- NEVER talk directly to the couple.
+- NEVER ask the user questions.
+- All outputs are meant for MWA to interpret and rephrase.
+- Keep JSON machine-parseable and avoid extra commentary outside JSON.
+
+Output format (always valid JSON):
 
 {
-  "packages": [
+  "photo_video_packages": [
     {
-      "name": "Full-Day Photo + Second Shooter",
-      "hours": 10,
+      "label": "Package A",
+      "coverage_hours": 0.0,
       "includes_video": false,
-      "estimated_cost": 4800,
-      "pros": [...],
-      "cons": [...],
-      "fit_score": 0.0
+      "second_shooter": false,
+      "deliverables": [
+        "approx. number of edited photos",
+        "gallery access",
+        "video deliverable description if any"
+      ],
+      "estimated_cost": 0.0,
+      "currency": "USD",
+      "notes_for_mwa": "string"
     }
   ],
-  "recommended_package": "Full-Day Photo + Second Shooter",
-  "shot_list": [
-    "First look on rooftop",
-    "Golden hour couple portraits",
-    "Family formals after ceremony"
+  "core_shot_list": [
+    {
+      "moment": "string (e.g., 'first look', 'ceremony processional')",
+      "priority": "must_have | nice_to_have",
+      "notes": "string (e.g., 'include grandparents', 'candid focus')"
+    }
   ],
-  "notes": [
-    "..."
-  ]
+  "general_guidance_for_mwa": "string with tips MWA can share about timing, light, and logistics"
 }
 """,
-    tools=[google_search],
+    tools=[],
 )
