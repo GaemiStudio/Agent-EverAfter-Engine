@@ -1,5 +1,4 @@
 from google.adk.agents import Agent
-from google.adk.tools import google_search
 from .sub_agents.budget_agent import budget_agent
 from .sub_agents.catering_agent import catering_agent
 from .sub_agents.creative_agent import creative_agent
@@ -42,5 +41,4 @@ root_agent = Agent (
         photography_agent
         
     ],
-    #tools=[google_search], disable for now so no function-calling, known issue with Google Search
 )
