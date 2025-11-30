@@ -1,15 +1,9 @@
 from google.adk.agents import Agent
 
-# If you later create a shared config.py, you can import WEDDING_MODEL from there.
-try:
-    from ..config import WEDDING_MODEL
-except ImportError:
-    WEDDING_MODEL = "gemini-2.5-flash-lite"
-
 
 photography_agent = Agent(
     name="PhotographyAgent",
-    model=WEDDING_MODEL,
+    model="gemini-2.0-flash",
     description=(
         "Back-office agent for photo/video coverage and shot list ideas. "
         "Never speaks directly to the user."
