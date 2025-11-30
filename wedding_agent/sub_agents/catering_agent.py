@@ -1,7 +1,7 @@
 from google.adk.agents import Agent
 
 # Import shared memory helpers
-from shared.memory_manager import load_wedding_state, append_notes
+from ..shared_memory_manager import load_wedding_state, append_notes
 
 catering_agent = Agent(
     name="catering_agent",

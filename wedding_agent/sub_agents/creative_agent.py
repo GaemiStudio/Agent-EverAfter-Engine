@@ -2,10 +2,10 @@ from google.adk.agents import Agent
 from google.adk.runners import InMemoryRunner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
-import asyncio
+#import asyncio # don't do at import time
 
 # Import shared memory helpers
-from shared.memory_manager import load_wedding_state, append_notes
+from ..shared_memory_manager import load_wedding_state, append_notes
 
 
 # ------------------------
@@ -58,7 +58,6 @@ async def _ensure_session():
         session_id=SESSION_ID,
     )
 
-asyncio.run(_ensure_session())
 
 
 # ------------------------

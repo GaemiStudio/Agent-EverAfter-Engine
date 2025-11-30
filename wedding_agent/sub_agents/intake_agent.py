@@ -1,6 +1,6 @@
 # agents/intake_agent/agent.py
 
-import asyncio
+#import asyncio
 import json
 
 from google.adk.agents import Agent
@@ -8,7 +8,7 @@ from google.adk.runners import InMemoryRunner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
-from shared.memory_manager import (
+from ..shared_memory_manager import (
     save_wedding_state,
     append_notes,
     build_intake_summary,
@@ -71,16 +71,10 @@ _session_service = InMemorySessionService()
 _runner = InMemoryRunner(agent=intake_agent, app_name=APP_NAME)
 
 
-async def _ensure_session():
-    # Create a single session we can reuse for this intake agent.
-    await _session_service.create_session(
-        app_name=APP_NAME,
-        user_id=USER_ID,
-        session_id=SESSION_ID,
-    )
+
 
 # Create the session at import time (fine for a simple local script)
-asyncio.run(_ensure_session())
+#asyncio.run(_ensure_session())
 
 
 def run_intake_and_save(couple_answers: str) -> dict:

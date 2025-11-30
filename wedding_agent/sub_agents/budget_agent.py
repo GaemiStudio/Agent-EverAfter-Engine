@@ -1,8 +1,9 @@
 from google.adk.agents import Agent
 from google.adk.tools import google_search
+from ..shared_memory_manager import load_wedding_state, append_notes
 
 budget_agent = Agent(
-    name="Budget Agent",
+    name="budget_agent",
     model="gemini-2.0-flash",
     description="Manages all financial planning, allocations, and trade-off suggestions.",
     instruction="""
