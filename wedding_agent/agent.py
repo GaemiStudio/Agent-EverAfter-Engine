@@ -27,9 +27,7 @@ root_agent = Agent (
         - Intake Agent: Ask core questions, gather all inputs needed to plan wedding into a clean structured JSON object that other agents can use.
 
 
-    You also have access to the following tools for information gathering:
 
-        - Google Search: For current vendor information, local cost estimates, and trend research.
 
         
     """,
