@@ -82,19 +82,24 @@ Couple → (raw answers)
 Our project was built using a modular, agent-based architecture supported by Google’s AI Developer Kit (ADK). Each component of the system was designed to perform a specialized role while contributing to a unified workflow. The key tools and technologies used include:
 
 Google ADK (AI Developer Kit)
+
 Defines, orchestrates, and runs multiple cooperating agents. ADK provided a standardized way to create agents with clear roles, built-in support for state management, tracing, and structured output, and smooth integration of LLM calls inside custom logic.
 
 Gemini Models
+
 Our agents relied on Gemini 2.5 Flash Lite (and Flash where required) to handle:
 Natural-language understanding, classification and extraction of relevant details, and generating structured JSON outputs used by other agents in the pipeline.
 
 Python
+
 Python served as the backbone for all implementation, allowing us to build sub-agents with isolated responsibilities, create shared utilities for memory and state tracking, run asynchronous logic where needed (e.g., preparing sessions).
 
 Custom Shared Memory Manager
+
 We implemented our own lightweight memory system to store user input across multiple steps, maintain a persistent wedding-planning state, and append notes and summaries for downstream use.
 
 Modular Sub-Agent Design
+
 We organized the workflow into focused sub-agents (e.g., intake, budget, creative) to keep the system clean, scalable, easy to build out.
 
 ## Conclusion
