@@ -8,7 +8,8 @@ This project demonstrates a multi-agent AI system designed to support complete w
 
 ## Diagram of Agent System
 
-<img width="1377" height="1051" alt="Wedding Agent Diagram" src="https://github.com/user-attachments/assets/076e1bd6-0b20-462f-adc9-278a8d684b6d" />
+![Wedding Agent Diagram](https://github.com/user-attachments/assets/0aa2294b-5601-4720-a32d-805e084a3e7f)
+
 
 
 ## Problem
