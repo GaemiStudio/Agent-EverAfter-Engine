@@ -1,4 +1,4 @@
-# Agent-Aisle-Buddy
+# Agent-EverAfter-Engine
 
 Kaggle AI Agent Capstone Group Project
 
@@ -79,5 +79,7 @@ Couple → (raw answers)
 
 ## Core Tools
 
+Google ADK (Agent Developement Kit) 
 ## Conclusion
 
+Through this project, we explored how multi-agent coordination, persistent memory, and structured output enforcement can turn a loosely defined problem—planning a wedding—into a reproducible, end-to-end workflow. This experience reinforced the value of clear agent roles, predictable delegation, and thoughtful system design when building reliable AI assistants. With more time, I would extend this architecture into deeper reasoning chains, cost modeling, and real-time external data retrieval, but the current system already demonstrates a strong proof-of-concept for domain-focused multi-agent pipelines. If we were to continue this project, our next build-out would be to refine the instructions for each agent to be even more precise and granular. As is shown in our architecture diagram, we would also explore making a robust memory_manager agent that would use an LLM to intelligently compact, call, and find patterns in the data from interactions. This would then feed in back to the main root agent to further refine and update the structure. We would also need to build a solid database that would keep memory long-term for a more personalized experience in both vector and graph databases.
